@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviour,IGameEnd
 {
     [SerializeField] float _speed;
     //[SerializeField] float _range;
@@ -15,6 +15,15 @@ public class Bullet : MonoBehaviour
         }
     }
     private void OnTriggerEnter(Collider other)
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void Start()
+    {
+        GameManager.Instance.AddSubscriber(this);
+    }
+    public void NotifyGameEnd()
     {
         gameObject.SetActive(false);
     }

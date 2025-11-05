@@ -876,6 +876,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 905904538579004298, guid: 33351dc4df51c0949a6d1dd3bc55feeb, type: 3}
+      propertyPath: _initHp
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 905904538579004298, guid: 33351dc4df51c0949a6d1dd3bc55feeb, type: 3}
       propertyPath: _wallTop
       value: 
       objectReference: {fileID: 1738401695}

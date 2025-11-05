@@ -41,10 +41,9 @@ public class Player : MonoBehaviour
     public void TakenDamage()
     {
         _curHp -= 1;
-        if(_curHp < 0)
+        if(_curHp <= 0)
         {
             GameManager.Instance.GameEnd();
-            Destroy(this);
         }
     }
 
@@ -82,5 +81,12 @@ public class Player : MonoBehaviour
     private void Update()
     {
         Moving();
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Bullet"))
+        {
+            TakenDamage();
+        }
     }
 }

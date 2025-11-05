@@ -23,6 +23,9 @@ public class GameManager : Singleton<GameManager>
     private Coroutine _timeCoroutine;
     private WaitForSeconds _waitTime;
 
+    //게임 종료시 총알 삭제 알리려고..
+    private List<IGameEnd> _bullets;
+
     //게임이 진행중인지 외부 참조용
     public bool IsPlaying
     {
@@ -79,6 +82,25 @@ public class GameManager : Singleton<GameManager>
         {
             StopCoroutine(_timeCoroutine);
         }
+
+        foreach(var sub in _bullets)
+        {
+            sub.NotifyGameEnd();
+        }
+    }
+
+    public void AddSubscriber(IGameEnd sub)
+    {
+        if(_bullets == null)
+        {
+            _bullets = new List<IGameEnd>();
+        }
+        _bullets.Add(sub);
+    }
+
+    public void UnSubscriber(IGameEnd sub)
+    {
+        _bullets.Remove(sub);
     }
     protected override void init()
     {
