@@ -2,24 +2,33 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class GameManager : Singleton<GameManager> 
 {
-    [SerializeField] private GameObject _playerPrefeb;
+    [SerializeField] private GameObject _player;
+    [SerializeField] private GameObject _startButton;
+    [SerializeField] private TextMeshProUGUI _TimeText;
 
     //시작 시간
     private float _startTime;
     //진행 시간
     private float _curTime;
+    //초기 플레이어 위치
+    private Vector3 _initPosition;
+    private Quaternion _initRotation;
 
-    private GameObject _player;
+    //시간 갱신용 코루틴
+    private Coroutine _timeCoroutine;
+    private WaitForSeconds _waitTime;
 
     //게임이 진행중인지 외부 참조용
     public bool IsPlaying
     {
         get
         {
-            if(_player == null)
+            if(!_player.activeSelf)
             {
                 return false;
             }
@@ -52,27 +61,48 @@ public class GameManager : Singleton<GameManager>
     public void GameStart()
     {
         _startTime = Time.time;
-        if(_player == null)
+        _player.SetActive(true);
+        _player.transform.position = _initPosition;
+        _player.transform.rotation = _initRotation;
+        _startButton.SetActive(false);
+        if (_timeCoroutine == null)
         {
-            _player = Instantiate(_playerPrefeb);
+            _timeCoroutine = StartCoroutine(CheckTime());
         }
     }
 
     public void GameEnd()
     {
         init();
+        _startButton.SetActive(true);
+        if(_timeCoroutine != null )
+        {
+            StopCoroutine(_timeCoroutine);
+        }
     }
     protected override void init()
     {
-        _player = null;
+        _player.SetActive(false);
         _startTime = -1;
+        _initPosition = _player.transform.position;
+        _initRotation = _player.transform.rotation;
+        _waitTime = new WaitForSeconds(0.01f);
     }
     private void Update()
     {
-        if (_player != null)
+        if (_player.activeSelf)
         {
             //플레이어가 살아 있을 때 계속해서 시간 측정
             _curTime = Time.time - _startTime;
+        }
+    }
+
+    private IEnumerator CheckTime()
+    {
+        while (true)
+        {
+            _TimeText.text = "Time : " + $"{_curTime:F2}";
+            yield return _waitTime;
         }
     }
 }
