@@ -81,6 +81,7 @@ public class GameManager : Singleton<GameManager>
         if(_timeCoroutine != null )
         {
             StopCoroutine(_timeCoroutine);
+            _timeCoroutine = null;
         }
 
         foreach(var sub in _bullets)
@@ -106,6 +107,11 @@ public class GameManager : Singleton<GameManager>
     {
         _player.SetActive(false);
         _startTime = -1;
+        
+        
+    }
+    private void Start()
+    {
         _initPosition = _player.transform.position;
         _initRotation = _player.transform.rotation;
         _waitTime = new WaitForSeconds(0.01f);

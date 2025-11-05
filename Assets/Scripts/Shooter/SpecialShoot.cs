@@ -33,6 +33,7 @@ public class SpecialShoot : MonoBehaviour
             if (_SpecialShootRoutine != null)
             {
                 StopCoroutine(_SpecialShootRoutine);
+                _SpecialShootRoutine = null;
             }
                
         }

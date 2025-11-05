@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class Player : MonoBehaviour
     [SerializeField] Transform _wallDown;
     [SerializeField] Transform _wallLeft;
     [SerializeField] Transform _wallRight;
+
+    //플레이어 목숨 이미지
+    [SerializeField] Image[] _lifeImage;
 
     //Moving 관련
     private Vector3 _moveDir;
@@ -40,8 +44,10 @@ public class Player : MonoBehaviour
 
     public void TakenDamage()
     {
+        _lifeImage[3 -_curHp].enabled = false;
         _curHp -= 1;
-        if(_curHp <= 0)
+       
+        if (_curHp <= 0)
         {
             GameManager.Instance.GameEnd();
         }
@@ -76,7 +82,15 @@ public class Player : MonoBehaviour
         _minPosZ = _wallDown.GetComponent<Collider>().bounds.max.z + selfObj;
         _maxPosZ = _wallTop.GetComponent<Collider>().bounds.min.z - selfObj;
 
-        _curHp = _initHp;
+        
+    }
+    private void OnEnable()
+    {
+        _curHp = _initHp; 
+        foreach(var img in _lifeImage)
+        {
+            img.enabled = true;
+        }
     }
     private void Update()
     {

@@ -116,10 +116,12 @@ public partial class Shooter : MonoBehaviour
             if (_shootingCoroutine != null)
             {
                 StopCoroutine(_shootingCoroutine);
+                _shootingCoroutine = null;
             }
             if(_levelCheckCoroutine != null)
             {
                 StopCoroutine(_levelCheckCoroutine);
+                _levelCheckCoroutine = null;
             }
             
         }
