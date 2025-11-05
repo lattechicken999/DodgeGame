@@ -54,7 +54,7 @@ public partial class Shooter : MonoBehaviour
             }
         }
         //모든 총알이 사용중이라면 새로 생성
-        var newBullet = Instantiate(_bulletPrefeb, spawnPoint);
+        var newBullet = Instantiate(_bulletPrefeb);
         _bulletPool.Add(newBullet);
     }
     
@@ -66,7 +66,6 @@ public partial class Shooter : MonoBehaviour
     {
         foreach (var localPoints in _localSpawnPoints)
         {
-            localPoints.LookAt(_target);
             FireBullet(localPoints);
         }
     }
