@@ -20,6 +20,7 @@ public class SpecialShoot : MonoBehaviour
 
     private void Update()
     {
+        //게임 시작시 코루틴 시작
         if(GameManager.Instance.IsPlaying)
         {
             if(_SpecialShootRoutine == null)
@@ -38,6 +39,8 @@ public class SpecialShoot : MonoBehaviour
                
         }
     }
+
+    //확률적으로 전탄발사
     private IEnumerator Shoot()
     {
         while(true)

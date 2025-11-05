@@ -9,7 +9,8 @@ public class GameManager : Singleton<GameManager>
 {
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _startButton;
-    [SerializeField] private TextMeshProUGUI _TimeText;
+    [SerializeField] private TextMeshProUGUI _timeText;
+    [SerializeField] private TextMeshProUGUI _gameEndText;
 
     //시작 시간
     private float _startTime;
@@ -42,6 +43,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    //게임 시간이 지남에 따라 난이도가 증가함
     public int PlayLevel
     { get 
         { 
@@ -63,11 +65,20 @@ public class GameManager : Singleton<GameManager>
 
     public void GameStart()
     {
+        //게임 종료 메세지 비활성화
+        _gameEndText.enabled = false;
+        //게임 시작 시간 기록
         _startTime = Time.time;
+
+        //플레이어 초기화
         _player.SetActive(true);
         _player.transform.position = _initPosition;
         _player.transform.rotation = _initRotation;
+
+        //시작 버튼 비활성화
         _startButton.SetActive(false);
+
+        //타임 체크 코루틴 시작(0.01초마다 시간 업데이트)
         if (_timeCoroutine == null)
         {
             _timeCoroutine = StartCoroutine(CheckTime());
@@ -76,18 +87,27 @@ public class GameManager : Singleton<GameManager>
 
     public void GameEnd()
     {
+        //게임 종료시 초기화
         init();
+
+        //시작 버튼 활성화
         _startButton.SetActive(true);
+
+        //코루틴 종료
         if(_timeCoroutine != null )
         {
             StopCoroutine(_timeCoroutine);
             _timeCoroutine = null;
         }
 
+        //모든 탄환 비활성화
         foreach(var sub in _bullets)
         {
             sub.NotifyGameEnd();
         }
+
+        //게임 종료 표시
+        _gameEndText.enabled = true;
     }
 
     public void AddSubscriber(IGameEnd sub)
@@ -115,6 +135,7 @@ public class GameManager : Singleton<GameManager>
         _initPosition = _player.transform.position;
         _initRotation = _player.transform.rotation;
         _waitTime = new WaitForSeconds(0.01f);
+        _gameEndText.enabled = false;
     }
     private void Update()
     {
@@ -129,7 +150,7 @@ public class GameManager : Singleton<GameManager>
     {
         while (true)
         {
-            _TimeText.text = "Time : " + $"{_curTime:F2}";
+            _timeText.text = "Time : " + $"{_curTime:F2}";
             yield return _waitTime;
         }
     }
