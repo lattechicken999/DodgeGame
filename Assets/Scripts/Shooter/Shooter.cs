@@ -40,10 +40,13 @@ public partial class Shooter : MonoBehaviour
     private void FireBullet(Transform spawnPoint)
     {
         //오브젝트 중 비활성화 된 총알이 있다면 발사
-        foreach(var bullet in _bulletPool)
+        spawnPoint.LookAt(_target.position);
+        foreach (var bullet in _bulletPool)
         {
             if(!bullet.activeSelf)
             {
+                //bullet.transform.parent = spawnPoint;
+
                 bullet.transform.position = spawnPoint.position;
                 bullet.transform.rotation = spawnPoint.rotation;
                 bullet.gameObject.SetActive(true);
@@ -51,9 +54,7 @@ public partial class Shooter : MonoBehaviour
             }
         }
         //모든 총알이 사용중이라면 새로 생성
-        var newBullet = Instantiate(_bulletPrefeb);
-        newBullet.transform.position = spawnPoint.position;
-        newBullet.transform.rotation = spawnPoint.rotation;
+        var newBullet = Instantiate(_bulletPrefeb, spawnPoint);
         _bulletPool.Add(newBullet);
     }
     
@@ -78,6 +79,7 @@ public partial class Shooter : MonoBehaviour
         _waitShootCools = new List<WaitForSeconds>();
         _bulletPool = new List<GameObject>();
         _localSpawnPoints = new List<Transform>();
+        _rnd = new System.Random();
     }
     private void Start()
     {
@@ -102,10 +104,12 @@ public partial class Shooter : MonoBehaviour
             if(_shootingCoroutine == null)
             {
                 _shootingCoroutine = StartCoroutine(AutoAttack());
+                return;
             }
             if (_levelCheckCoroutine == null)
             {
                 _levelCheckCoroutine = StartCoroutine(LevelCheck());
+                return;
             }
         }
         else
@@ -133,13 +137,16 @@ public partial class Shooter : MonoBehaviour
     /// <returns></returns>
     private IEnumerator AutoAttack()
     {
-        for(int i =0;i< _shootSameTime[_curLevel];i++)
+        while(true)
         {
-            //랜덤으로 가져와 발사하기
-            //같은거 가져오면 뭐.. 아쉬운거지
-            FireBullet(_localSpawnPoints[_rnd.Next(0, _localSpawnPoints.Count)]);
+            for (int i = 0; i < _shootSameTime[_curLevel]; i++)
+            {
+                //랜덤으로 가져와 발사하기
+                //같은거 가져오면 뭐.. 아쉬운거지
+                FireBullet(_localSpawnPoints[_rnd.Next(0, _localSpawnPoints.Count)]);
+            }
+            yield return _waitShootCools[_curLevel];
         }
-       yield return _waitShootCools[_curLevel];
     }
     /// <summary>
     /// 1초마다 레벨 체크
