@@ -110,8 +110,15 @@ public partial class Shooter : MonoBehaviour
         }
         else
         {
-            StopCoroutine(_shootingCoroutine);
-            StopCoroutine(_levelCheckCoroutine);
+            if (_shootingCoroutine != null)
+            {
+                StopCoroutine(_shootingCoroutine);
+            }
+            if(_levelCheckCoroutine != null)
+            {
+                StopCoroutine(_levelCheckCoroutine);
+            }
+            
         }
 
     }
