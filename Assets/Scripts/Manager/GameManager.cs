@@ -35,17 +35,17 @@ public class GameManager : Singleton<GameManager>
         { 
             if(_curTime < 10)
             {
-                return 1;
+                return 0;
             }
             if(_curTime < 20)
             {
-                return 2;
+                return 1;
             }
             if(_curTime < 30)
             {
-                return 3;
+                return 2;
             }
-            return 4; 
+            return 3; 
         }
     }
 
